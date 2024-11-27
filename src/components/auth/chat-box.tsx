@@ -13,13 +13,17 @@ function ChatBox() {
       avatar: ROBERT,
       message: "Welcome!",
       timestamp: new Date(),
+      sender: "Robert",
     });
   }, [addMessage]);
 
   return (
     <div className="flex flex-1 h-full w-full justify-end flex-col overflow-hidden">
-      {messages.map((message) => (
-        <ChatMsg key={message.timestamp.toString()} {...message} />
+      {messages.map((message, index) => (
+        <ChatMsg
+          key={`${index} - ${message.timestamp.toString()}`}
+          {...message}
+        />
       ))}
     </div>
   );
