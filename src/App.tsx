@@ -1,11 +1,15 @@
-import { BrowserRouter } from 'react-router';
-import AppRoutes from './routes';
+import { BrowserRouter } from "react-router";
+
+import { ThemeProvider } from "./providers/theme-provider";
+import AppRoutes from "./routes";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
