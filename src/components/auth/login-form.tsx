@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 
 import { login_req } from "@/api/auth";
 import { useAuthChatBox } from "@/hooks/use-auth-chat-box";
-import { KINGSTON } from "@/lib/constants";
+import { KINGSTON, ROBERT } from "@/lib/constants";
 import { CommonError } from "@/types/common";
 
 import { Button } from "../ui/button";
@@ -27,26 +27,30 @@ function LoginForm() {
       email: "",
       password: "",
     },
-    onSubmit: (values, { resetForm, setSubmitting }) => {
-      setSubmitting(true);
+    onSubmit: (values) => {
       handleLogin.mutate(values);
-      resetForm();
-      setSubmitting(false);
     },
   });
 
   const handleLogin = useMutation(login_req, {
-    onSuccess(data, variables, context) {
-      console.log(data, variables, context);
+    onSuccess() {
+      addMessage({
+        avatar: ROBERT,
+        message: "We have waited for your return.",
+        sender: "Robert",
+        timestamp: new Date(),
+      });
+      formik.setSubmitting(false);
+      formik.resetForm();
     },
     onError(error: AxiosError<CommonError>) {
-      console.log(error);
       addMessage({
         avatar: KINGSTON,
         message: error.response?.data.message ?? "Something went wrong...",
         sender: "Kingston",
         timestamp: new Date(),
       });
+      formik.setSubmitting(false);
     },
   });
 
@@ -60,7 +64,12 @@ function LoginForm() {
         <CardContent className="space-y-2">
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" {...formik.getFieldProps("email")} />
+            <Input
+              id="email"
+              type="email"
+              {...formik.getFieldProps("email")}
+              required
+            />
           </div>
           <div className="space-y-1">
             <Label htmlFor="password">Password</Label>
@@ -68,11 +77,14 @@ function LoginForm() {
               id="password"
               type="password"
               {...formik.getFieldProps("password")}
+              required
             />
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={formik.isSubmitting}>
+            Login
+          </Button>
         </CardFooter>
       </form>
     </Card>
